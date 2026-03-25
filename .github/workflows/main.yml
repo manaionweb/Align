@@ -1,0 +1,12 @@
+name: Aligen
+on: 
+  push:
+    branches: [ main]
+
+jobs:
+  demo:
+    runs-on : ubuntu-latest
+
+    steps:
+      - name: Gretting
+        run: echo "Hello from Man"
