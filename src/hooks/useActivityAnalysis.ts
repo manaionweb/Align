@@ -13,11 +13,12 @@ export const useActivityAnalysis = () => {
     const profession = activities.filter(a => a.skill && a.pay);
     const vocation = activities.filter(a => a.need && a.pay);
 
-    // strict only-one categories
-    const hobbies = activities.filter(a => a.love && !a.skill && !a.need && !a.pay); // "Love only"
-    const skills = activities.filter(a => !a.love && a.skill && !a.need && !a.pay); // "Skill only"
-    const causes = activities.filter(a => !a.love && !a.skill && a.need && !a.pay); // "Need only" (Causes)
-    const jobs = activities.filter(a => !a.love && !a.skill && !a.need && a.pay); // "Pay only" (Jobs)
+    // strict only-one categories + opposites
+    const hobbies = activities.filter(a => a.love && !a.skill && !a.need); // "Love only" + "Love & Pay"
+    const skills = activities.filter(a => !a.love && a.skill && !a.pay); // "Skill only" + "Skill & Need"
+    const causes = activities.filter(a => !a.love && !a.pay && a.need); // "Need only" + "Skill & Need"
+    const jobs = activities.filter(a => !a.skill && !a.need && a.pay); // "Pay only" + "Love & Pay"
+    const uncategorized = activities.filter(a => !a.love && !a.skill && !a.need && !a.pay); // "None"
 
     return {
       ikigai,
@@ -29,6 +30,7 @@ export const useActivityAnalysis = () => {
       skills,
       causes,
       jobs,
+      uncategorized,
       activities // return raw list just in case
     };
   }, [activities]);

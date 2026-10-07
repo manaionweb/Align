@@ -11,8 +11,9 @@ interface AddActivityModalProps {
 }
 
 export default function AddActivityModal({ visible, onClose, editingActivity }: AddActivityModalProps) {
-  const { addActivity, updateActivity } = useIkigai();
+  const { activities, addActivity, updateActivity } = useIkigai();
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
   const [toggles, setToggles] = useState({
     love: false,
     skill: false,
@@ -37,11 +38,23 @@ export default function AddActivityModal({ visible, onClose, editingActivity }: 
   }, [visible, editingActivity]);
 
   const handleSave = () => {
-    if (name.trim()) {
+    const trimmedName = name.trim();
+    if (trimmedName) {
+      // Check for duplicates
+      const isDuplicate = activities.some(activity => 
+        activity.name.toLowerCase() === trimmedName.toLowerCase() && 
+        (!editingActivity || activity.id !== editingActivity.id)
+      );
+
+      if (isDuplicate) {
+        setError('An activity with this name already exists.');
+        return;
+      }
+
       if (editingActivity) {
-        updateActivity(editingActivity.id, { name: name.trim(), ...toggles });
+        updateActivity(editingActivity.id, { name: trimmedName, ...toggles });
       } else {
-        addActivity(name.trim(), toggles);
+        addActivity(trimmedName, toggles);
       }
       reset();
       onClose();
@@ -50,6 +63,7 @@ export default function AddActivityModal({ visible, onClose, editingActivity }: 
 
   const reset = () => {
     setName('');
+    setError('');
     setToggles({ love: false, skill: false, need: false, pay: false });
   };
 
@@ -99,14 +113,18 @@ export default function AddActivityModal({ visible, onClose, editingActivity }: 
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Activity Name</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, error ? styles.inputError : null]}
                   placeholder="e.g. Drawing, Coding etc."
                   placeholderTextColor="#999"
                   value={name}
-                  onChangeText={setName}
+                  onChangeText={(text) => {
+                    setName(text);
+                    if (error) setError('');
+                  }}
                   autoFocus={!editingActivity}
                   selectionColor="#868B75"
                 />
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>
 
               <View style={styles.questionsContainer}>
@@ -177,6 +195,17 @@ const styles = StyleSheet.create({
     color: '#5A5348',
     elevation: 2,
     boxShadow: '0 2 4 rgba(0,0,0,0.05)',
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: '#C77D63', // Soft red/coral from palette
+  },
+  errorText: {
+    color: '#C77D63',
+    fontSize: 12,
+    fontFamily: FONTS.body,
+    marginLeft: 12,
+    marginTop: 2,
   },
   questionsContainer: {
     gap: 20,

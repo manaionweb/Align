@@ -61,10 +61,13 @@ export default function CategoryListScreen() {
     if (category === 'single') return activity.id === route.params?.activityId;
 
     // Single attributes for "Still Exploring"
-    if (category === 'hobbies') return love && !skill && !need && !pay; 
-    if (category === 'skills') return skill && !love && !need && !pay;
-    if (category === 'causes') return need && !love && !skill && !pay;
-    if (category === 'jobs') return pay && !love && !skill && !need; // "Jobs" usually just pay
+    if (category === 'hobbies') return love && !skill && !need; 
+    if (category === 'skills') return skill && !love && !pay;
+    if (category === 'causes') return need && !love && !pay; 
+    if (category === 'jobs') return pay && !skill && !need; 
+    
+    // Uncategorized
+    if (category === 'uncategorized') return !love && !skill && !need && !pay;
 
     // Fallback for "All" or unknown
     return true; 
