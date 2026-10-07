@@ -125,7 +125,7 @@ export default function HomeScreen() {
     );
   };
 
-  const hasExploringItems = analysis.hobbies.length > 0 || analysis.skills.length > 0 || analysis.jobs.length > 0 || analysis.causes.length > 0;
+  const hasExploringItems = analysis.hobbies.length > 0 || analysis.skills.length > 0 || analysis.jobs.length > 0 || analysis.causes.length > 0 || analysis.uncategorized.length > 0;
 
   const viewRef = React.useRef(null);
   const route = useRoute<any>();
@@ -244,6 +244,12 @@ export default function HomeScreen() {
                   category="causes"
                   count={analysis.causes.length} 
                   icon="causes" 
+                />
+                 <ExploringCard 
+                  title="Uncategorized" 
+                  category="uncategorized"
+                  count={analysis.uncategorized.length} 
+                  icon="menu" 
                 />
               </View>
             </>
